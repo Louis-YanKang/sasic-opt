@@ -27,10 +27,6 @@ For sample test, we only use the example image in the assets folder. frankfurt_0
      python3 tensorrt_all.py
 
 
-## Examples
-![image](./assets/cityscapes_example-01.png "Qualitative comparison for a sample from the Cityscapes dataset")
-![image](./assets/instereo_example-02.png "Qualitative comparison for a sample from the InStereo2k dataset")
-
 ## Citation
 
 If you use this project please consider citing our work
