@@ -176,7 +176,6 @@ def calc_rate(y_q, mean, scale, sigma_lower_bound=0.1, likelihood_lower_bound=1e
 
 def right_to_left(x_right, shift):
 	out = torch.zeros(x_right.shape).to(x_right.device)
-	
 	for b, shifts in enumerate(shift):
 		for c, s in enumerate(shifts):
 			if s > 0:
@@ -186,15 +185,43 @@ def right_to_left(x_right, shift):
 	return out
 
 def left_to_right(x_left, shift):
-	out = torch.zeros(x_left.shape).to(x_left.device)
-	
-	for b, shifts in enumerate(shift):
-		for c, s in enumerate(shifts):
-			if s > 0:
-				out[b,c,:,:-s:] = x_left[b,c,:,s:]
-			else:
-				out[b,c,:,:] = x_left[b,c,:,:]
-	return out
+    out = torch.zeros(x_left.shape).to(x_left.device)
+    #import ipdb;ipdb.set_trace()
+    #for b, shifts in enumerate(shift):
+    b = 0
+    #import ipdb; ipdb.set_trace()
+    if isinstance(shift,list):
+        if isinstance(shift[0],list):
+            shift = shift[0]
+            shifts = shift
+            for c, s in enumerate(shifts):
+                if s > 0:
+                    out[b,c,:,:-s:] = x_left[b,c,:,s:]
+                else:
+                    out[b,c,:,:] = x_left[b,c,:,:]
+        else:
+            for c, s in enumerate(shift):
+                if s > 0:
+                    out[b,c,:,:-s:] = x_left[b,c,:,s:]
+                else:
+                    out[b,c,:,:] = x_left[b,c,:,:]
+    elif isinstance(shift,torch.Tensor):
+        if len(shift.shape) == 2:
+            shift = shift[0]
+            shifts = shift
+            for c, s in enumerate(shifts):
+                if s > 0:
+                    out[b,c,:,:-s:] = x_left[b,c,:,s:]
+                else:
+                    out[b,c,:,:] = x_left[b,c,:,:]
+        else:
+            for c, s in enumerate(shift):
+                if s > 0:
+                    out[b,c,:,:-s:] = x_left[b,c,:,s:]
+                else:
+                    out[b,c,:,:] = x_left[b,c,:,:]
+        
+    return out
 
 class GetShift:
 
