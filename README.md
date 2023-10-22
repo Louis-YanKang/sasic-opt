@@ -25,19 +25,3 @@ For sample test, we only use the example image in the assets folder. frankfurt_0
  Step 3: Using "tensorrt_all.py" to get the output images, two png files will be generated corresponding with left and right eye images
 
      python3 tensorrt_all.py
-
-
-## Citation
-
-If you use this project please consider citing our work
-
-```
-@InProceedings{Wodlinger_2022_CVPR,
-    author    = {W\"odlinger, Matthias and Kotera, Jan and Xu, Jan and Sablatnig, Robert},
-    title     = {SASIC: Stereo Image Compression With Latent Shifts and Stereo Attention},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-    month     = {June},
-    year      = {2022},
-    pages     = {661-670}
-}
-```
