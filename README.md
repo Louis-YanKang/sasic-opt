@@ -1,5 +1,8 @@
+# SASIC-opt
+Forked from SASIC to test out the performance with TensorRT
+
 # SASIC
-Official code of our CVPR paper *"SASIC: Stereo Image Compression with Latent Shifts and Stereo Attention"* by Matthias Wödlinger, Jan Kotera, Jan Xu, Robert Sablatnig
+Official code of CVPR paper *"SASIC: Stereo Image Compression with Latent Shifts and Stereo Attention"* by Matthias Wödlinger, Jan Kotera, Jan Xu, Robert Sablatnig
 
 ## Installation
 
@@ -8,31 +11,23 @@ Install the necessary packages from the `requirements.txt` file with pip:
 ```pip install -r requirements.txt```
 
 ## Data
-To use your own dataset set the paths to your dataset in the "data_zoo_stereo" dictionary in sasic/dataset.py and write a corresponding section in the "get_file_dict" method.
-
-## Training
-Train a new model with train.py. Example:
-
-```python train.py EXP_NAME GPU_IDX --lr 0.0001 --lr_drop 500000 --epochs 500 --train cityscapes```
-
-The model weights are saved under `experiments/EXP_NAME-HASH` (where HASH is added to prevent collisons for experiments with the same EXP_NAME).
-
-## Testing
-Test a model with test.py. Example:
-
-```python test.py GPU_IDX RESUME```
-
-where `RESUME` points to a directory that contains a trained `model.pt` file (in the training example above `RESUME` would be set to `experiments/EXP_NAME-HASH`). A pre-trained model for the cityscapes dataset and lambda=0.01 is included in `experiments/cityscapes_lambda0.01_500epochs`.
+For sample test, we only use the example image in the assets folder. frankfurt_000000_009291_leftImg8bit.png and frankfurt_000000_009291_rightImg8bit.png
 
 ## Encoding/decoding
-To save the compressed stereo image pair in a bitstream use the encode.py and decode.py python scripts.
-Encoding example:
+ Step 1: Generate ONNX file using "all_onnx_wrapper.py"
+     python3 all_onnx_wrapper.py --gpu --left assets/frankfurt_000000_009291_leftImg8bit.png --right assets/frankfurt_000000_009291_rightImg8bit.png --output_filename "frankfurt_000000_009291.sasic" --model experiments/cityscapes_lambda0.01_500epochs/model.pt
 
-```python3 encode.py --gpu --left assets/frankfurt_000000_009291_leftImg8bit.png --right assets/frankfurt_000000_009291_rightImg8bit.png --output_filename "frankfurt_000000_009291.sasic" --model experiments/cityscapes_lambda0.01_500epochs/model.pt```
+     a ONNX file ("model_wrapper.onnx") will be generated 
 
-Decoding example:
+ Step 2: Using TensorRT to obtain the trt model
+     trtexec --onnx=model_wrapper.onnx --saveEngine=wrapper_fp32.trt --noTF32
 
-```python3 decode.py --gpu --model experiments/cityscapes_lambda0.01_500epochs/model.pt --image_filename frankfurt_000000_009291.sasic```
+     a trt model with fp32 precision will be genarted
+
+ Step 3: Using "tensorrt_all.py" to get the output images
+     python3 tensorrt_all.py
+
+     two png files will be generated corresponding with left and right eye images
 
 
 
